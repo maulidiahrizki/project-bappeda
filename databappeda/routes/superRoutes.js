@@ -33,20 +33,17 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Mencari super admin berdasarkan username
     const result = await modelSuperAdmin.getByUsername(username);
     
     if (result.length > 0) {
-      const user = result[0];  // Mendapatkan data super admin
-
-      // Memverifikasi password yang dimasukkan dengan yang ada di database
+      const user = result[0];
       const isPasswordValid = await modelSuperAdmin.verifyPassword(user.password_superadmin, password);
 
       if (isPasswordValid) {
-        // Membuat token untuk autentikasi
         const token = jwt.sign({ userId: user.id_superadmin }, 'your_jwt_secret_key', { expiresIn: '1h' });
 
-        res.status(200).json({ message: 'Login berhasil', userId: user.id_superadmin, token: token });
+        res.cookie('token', token, { httpOnly: true }); // Kirim token sebagai cookie
+        res.redirect('/superadmin/dashboard'); // Arahkan ke dashboard setelah login berhasil
       } else {
         res.status(400).json({ message: "Password salah" });
       }
@@ -58,9 +55,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get('/admin/dashboard', verifyToken, (req, res) => {
-  res.status(200).json({ message: 'Selamat datang di dashboard admin!', user: req.user });
+
+router.get('/dashboard', verifyToken, (req, res) => {
+  res.render('superadmin/dashboard', { user: req.user });
 });
+
 
 router.get('/login', (req, res) => {
   res.render('superadmin/login'); // Pastikan path ini sesuai dengan letak file login.ejs

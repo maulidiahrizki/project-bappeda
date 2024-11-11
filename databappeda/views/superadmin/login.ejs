@@ -98,13 +98,13 @@
       <div class="login_wrapper" style="margin-top: 100px;">
         <div class="animate form login_form">
           <section class="login_content">
-            <form id="loginForm">
+            <form id="loginForm" action="/superadmin/login" method="POST">
               <h1>Login</h1>
               <div>
-                <input type="text" id="username_superadmin" name="username_superadmin" class="form-control" placeholder="Username" required="" />
+                <input type="text" id="username_superadmin" name="username" class="form-control" placeholder="Username" required="" />
               </div>
               <div class="password-container">
-                <input type="password" id="loginPassword" name="password_superadmin" class="form-control" placeholder="Password" required="" />
+                <input type="password" id="loginPassword" name="password" class="form-control" placeholder="Password" required="" />
                 <i class="fa fa-eye toggle-password" onclick="togglePassword('loginPassword')"></i>
               </div>
                 <div>
