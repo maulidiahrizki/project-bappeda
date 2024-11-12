@@ -2,9 +2,9 @@ const connection = require("../database/database");
 
 class modelBidang {
   // Menambahkan bidang baru
-  static async addBidang(data) {
+  static async tambahBidang(data) {
     return new Promise((resolve, reject) => {
-      connection.query("INSERT INTO bidang SET ?", data, function (err, result) {
+      connection.query("INSERT INTO bidang (nama_bidang) VALUES (?)", [data.nama_bidang], function (err, result) {
         if (err) {
           reject(err);
         } else {
@@ -14,7 +14,7 @@ class modelBidang {
     });
   }
 
-  // Mendapatkan semua bidang
+  // Mendapatkan semua data bidang
   static async getAllBidang() {
     return new Promise((resolve, reject) => {
       connection.query("SELECT * FROM bidang", function (err, rows) {
@@ -27,7 +27,7 @@ class modelBidang {
     });
   }
 
-  // Mendapatkan bidang berdasarkan ID
+  // Mendapatkan data bidang berdasarkan ID
   static async getBidangById(id) {
     return new Promise((resolve, reject) => {
       connection.query("SELECT * FROM bidang WHERE id_bidang = ?", [id], function (err, rows) {
@@ -40,10 +40,10 @@ class modelBidang {
     });
   }
 
-  // Mengupdate bidang
+  // Update nama bidang
   static async updateBidang(id, data) {
     return new Promise((resolve, reject) => {
-      connection.query("UPDATE bidang SET ? WHERE id_bidang = ?", [data, id], function (err, result) {
+      connection.query("UPDATE bidang SET nama_bidang = ? WHERE id_bidang = ?", [data.nama_bidang, id], function (err, result) {
         if (err) {
           reject(err);
         } else {
@@ -66,5 +66,9 @@ class modelBidang {
     });
   }
 }
+
+module.exports = modelBidang;
+
+
 
 module.exports = modelBidang;
