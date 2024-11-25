@@ -3,11 +3,15 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require('express-session');
+const flash = require('connect-flash');
 
+// Routes
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const superadminRouter = require('./routes/superRoutes');
 const bidangRouter = require('./routes/bidangRoutes');
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -21,10 +25,29 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Session and flash configuration
+app.use(
+  session({
+    secret: 'secretKey', // replace 'secretKey' with a secure secret key
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(flash());
+
+// Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/superadmin', superadminRouter);
 app.use('/bidang', bidangRouter);
+app.use("/adminkabid", adminRoutes);
+
+// Middleware to make flash messages accessible in views
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash('success');
+  res.locals.errorMessage = req.flash('error');
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -67,8 +67,6 @@ class modelBidang {
   }
 }
 
-module.exports = modelBidang;
-
 
 
 module.exports = modelBidang;
