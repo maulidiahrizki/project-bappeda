@@ -1,71 +1,46 @@
 const connection = require("../database/database");
-const bcrypt = require("bcrypt");
 
-class AdminKabidModel {
-  // Mendapatkan semua data admin_kabid
-  static async getAll() {
+class modelAdmin {
+  // Menambahkan admin baru
+  static async tambahAdmin(data) {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT admin_kabid.*, bidang.nama_bidang FROM admin_kabid JOIN bidang ON admin_kabid.bidang_id = bidang.id_bidang", (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows);
+      connection.query("INSERT INTO admin_kabid (nama_adminkabid, nip_adminkabid, jabatan_adminkabid, alamat_adminkabid, no_telp_adminkabid, email_adminkabid, username_adminkabid, password_adminkabid, foto_profil_adminkabid, bidang_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [data.nama_adminkabid, data.nip_adminkabid, data.jabatan_adminkabid, data.alamat_adminkabid, data.no_telp_adminkabid, data.email_adminkabid, data.username_adminkabid, data.password_adminkabid, data.foto_profil_adminkabid, data.bidang_id], 
+        function (err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+    });
+  }
+
+  // Mendapatkan semua admin
+  static async getAllAdmins() {
+    return new Promise((resolve, reject) => {
+      connection.query("SELECT * FROM admin_kabid", function (err, rows) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
+        }
       });
     });
   }
 
-  // Menyimpan data admin_kabid baru
-  static async tambah(data) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (data.password_adminkabid) {
-          data.password_adminkabid = await bcrypt.hash(data.password_adminkabid, 10);
-        }
-        connection.query("INSERT INTO admin_kabid SET ?", data, (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  // Mendapatkan data admin_kabid berdasarkan ID
-  static async getById(id) {
+  // Mendapatkan bidang
+  static async getAllBidang() {
     return new Promise((resolve, reject) => {
-      connection.query("SELECT admin_kabid.*, bidang.nama_bidang FROM admin_kabid JOIN bidang ON admin_kabid.bidang_id = bidang.id_bidang WHERE admin_kabid.id_adminkabid = ?", id, (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows[0]); // returning a single object
-      });
-    });
-  }
-
-  // Mengupdate data admin_kabid berdasarkan ID
-  static async update(id, data) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (data.password_adminkabid) {
-          data.password_adminkabid = await bcrypt.hash(data.password_adminkabid, 10);
+      connection.query("SELECT * FROM bidang", function (err, rows) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
         }
-        connection.query("UPDATE admin_kabid SET ? WHERE id_adminkabid = ?", [data, id], (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  // Menghapus data admin_kabid berdasarkan ID
-  static async delete(id) {
-    return new Promise((resolve, reject) => {
-      connection.query("DELETE FROM admin_kabid WHERE id_adminkabid = ?", id, (err, result) => {
-        if (err) reject(err);
-        else resolve(result);
       });
     });
   }
 }
 
-
-module.exports = AdminKabidModel;
+module.exports = modelAdmin;

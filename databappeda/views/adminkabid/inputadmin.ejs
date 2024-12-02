@@ -29,6 +29,7 @@
     display: block;
 }
 
+
 /* Styling untuk select input */
 .form-select {
     width: 100%;
@@ -63,6 +64,113 @@
     margin-bottom: 1.5rem; /* Memberikan jarak antar elemen form */
 }
 
+/* Styling untuk kotak dua kolom */
+.form-group.double-column {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.form-group.double-column .col-md-6 {
+    width: 48%;
+}
+
+.data-box {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Layout untuk data dalam dua kolom */
+.form-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Membagi menjadi dua kolom */
+    gap: 20px; /* Jarak antar elemen */
+}
+
+/* Styling untuk setiap input */
+.form-control {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+/* Efek focus */
+.form-control:focus {
+    border-color: #66afe9;
+    outline: none;
+    background-color: #fff;
+}
+
+/* Styling label */
+.col-form-label {
+    font-weight: 500;
+}
+
+/* Tombol Minimalis */
+.btn-minimal {
+    padding: 8px 16px; /* Ukuran kecil tapi tetap nyaman */
+    font-size: 14px;   /* Font yang proporsional */
+    font-weight: 500;  /* Sedikit bold */
+    border: none;      /* Tanpa border untuk kesan modern */
+    border-radius: 5px; /* Sudut tumpul ringan */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Animasi halus */
+}
+
+/* Warna Dasar Tombol */
+.btn-danger {
+    background-color: #f44336; /* Merah elegan */
+    color: white;
+}
+
+.btn-success {
+    background-color: #4caf50; /* Hijau elegan */
+    color: white;
+}
+
+/* Hover Efek */
+.btn-danger:hover {
+    background-color: #d32f2f; /* Merah lebih gelap */
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.2); /* Bayangan lembut */
+}
+
+.btn-success:hover {
+    background-color: #388e3c; /* Hijau lebih gelap */
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2); /* Bayangan lembut */
+}
+
+/* Fokus Efek */
+.btn-minimal:focus {
+    outline: 2px solid #ddd; /* Fokus minimal */
+    outline-offset: 2px;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    .btn-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 10px; /* Jarak antar tombol */
+    }
+}
+
+
+/* Menjaga form-group agar tetap responsif pada layar kecil */
+@media (max-width: 768px) {
+    .form-group.double-column {
+        flex-direction: column;
+    }
+
+    .form-group.double-column .col-md-6 {
+        width: 100%;
+    }
+}
 </style>
 
 <!-- page content -->
@@ -87,23 +195,11 @@
 
                 <!-- Smart Wizard -->
                 <p style="color: red;">*Pastikan semua data yang Anda masukkan sudah benar dan lengkap sebelum menyimpannya</p>
-                <div id="wizard_verticle" class="form_wizard wizard_verticle">
-                    <ul class="list-unstyled wizard_steps">
-                        <li>
-                            <a href="#step-1">
-                                <span class="step_no">1</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#step-2">
-                                <span class="step_no">2</span>
-                            </a>
-                        </li>
-                    </ul>
+                <div  class="form_wizard wizard_verticle">
 
                     <!-- Step 1 -->
                     <div id="step-1">
-                        <form action="/adminkabid/tambah" method="POST" enctype="multipart/form-data" id="form-step-1" class="form-horizontal form-label-left">
+                        <form action="/adminkabid/input" method="POST" enctype="multipart/form-data" id="form-step-1" class="form-horizontal form-label-left">
                             <!-- Foto Profil -->
                             <div class="form-group row" style="text-align: center; margin-top: 20px;">
                                 <div class="col-md-12">
@@ -118,90 +214,85 @@
                                 </div>
                             </div>
 
-                            <!-- Nama, NIP, Nama Bidang, Jabatan -->
-                            <div class="form-group row" style="margin-top: 20px;">
-                                <label class="col-form-label col-md-3 label-align">Nama Lengkap</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="nama_adminkabid" name="nama_adminkabid" required class="form-control">
+                            <!-- Kotakan untuk data -->
+                            <div class="data-box">
+                                <div class="form-wrapper">
+                                    <!-- Kolom 1 -->
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nama Lengkap</label>
+                                        <input type="text" id="nama_adminkabid" name="nama_adminkabid" required class="form-control">
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nomor NIP</label>
+                                        <input type="text" id="nip_adminkabid" name="nip_adminkabid" required class="form-control">
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nama Bidang</label>
+                                        <select name="bidang_id" class="form-control" required>
+                                            <option value="">Pilih Bidang</option>
+                                            <% bidang.forEach(function(bidang) { %>
+                                            <option value="<%= bidang.id_bidang %>"><%= bidang.nama_bidang %></option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                            
+                                    <!-- Kolom 2 -->
+                                    <div class="form-group">
+                                        <label class="col-form-label">Jabatan</label>
+                                        <input type="text" id="jabatan_adminkabid" name="jabatan_adminkabid" required class="form-control">
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label class="col-form-label">Alamat</label>
+                                        <input type="text" id="alamat_adminkabid" name="alamat_adminkabid" required class="form-control">
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label class="col-form-label">Nomor Telepon</label>
+                                        <input type="text" id="no_telp_adminkabid" name="no_telp_adminkabid" required class="form-control">
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label class="col-form-label">Email</label>
+                                        <input type="email" id="email_adminkabid" name="email_adminkabid" required class="form-control">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Nomor NIP</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="nip_adminkabid" name="nip_adminkabid" required class="form-control">
+                            
+                            <!-- Kotakan terpisah untuk Username dan Password -->
+                            <div class="data-box" style="margin-top: 20px;">
+                                <h4 style="margin-bottom: 15px; font-weight: bold;">Akun Login</h4>
+                                <div class="form-wrapper">
+                                    <!-- Username -->
+                                    <div class="form-group">
+                                        <label class="col-form-label">Username</label>
+                                        <input type="text" id="username_adminkabid" name="username_adminkabid" required class="form-control">
+                                    </div>
+                            
+                                    <!-- Password -->
+                                    <div class="form-group">
+                                        <label class="col-form-label">Password</label>
+                                        <div style="position: relative;">
+                                            <input type="password" id="password_adminkabid" name="password_adminkabid" required class="form-control">
+                                            <i class="fa fa-eye" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;" onclick="togglePassword('password_adminkabid')"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Nama Bidang</label>
-                                <div class="col-md-6">
-                                    <select id="id_bidang" name="bidang_id" class="form-select" required>
-                                        <option value="">Pilih bidang</option>
-                                        <% data.forEach(item => { %>
-                                            <option value="<%= item.id_bidang %>"><%= item.nama_bidang %></option>
-                                        <% }); %>
-                                    </select>
-                                </div>
+
+                            <!-- Tombol -->
+                            <div class="btn-wrapper" style="text-align: center; margin-top: 20px;">
+                                <button class="btn-minimal btn-danger" type="reset">Reset</button>
+                                <button type="submit" class="btn-minimal btn-success">Submit</button>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Jabatan</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="jabatan_adminkabid" name="jabatan_adminkabid" required class="form-control">
-                                </div>
-                            </div>
+                            
+
                         </form>
                     </div>
 
-                    <!-- Step 2 -->
-                    <div id="step-2">
-                        <form action="/adminkabid/tambah" method="POST" id="form-step-2" class="form-horizontal form-label-left">
-                            
-                            <div class="form-group row" style="margin-top: 20px;">
-                                <label class="col-form-label col-md-3 label-align">Alamat</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="alamat_adminkabid" name="alamat_adminkabid" required class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Nomor Telepon</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="no_telp_adminkabid" name="no_telp_adminkabid" required class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Email</label>
-                                <div class="col-md-6">
-                                    <input type="email" id="email_adminkabid" name="email_adminkabid" required class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Jabatan</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="jabatan_adminkabid" name="jabatan_adminkabid" required class="form-control">
-                                </div>
-                            </div>
-                            
-                            
-                            <!-- Alamat, Kontak, Login Details -->
-
-
-
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Username</label>
-                                <div class="col-md-6">
-                                    <input type="text" id="username_adminkabid" name="username_adminkabid" required class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-3 label-align">Password</label>
-                                <div class="col-md-6">
-                                    <input type="password" id="password_adminkabid" name="password_adminkabid" required class="form-control">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                 </div>
-                <!-- End SmartWizard Content -->
 
             </div>
         </div>
@@ -234,6 +325,33 @@ document.getElementById('drop-zone').addEventListener('click', () => {
     document.getElementById('foto_profil_adminkabid').click(); // Trigger klik pada input file saat drop zone diklik
 });
 
+window.onload = function() {
+              // Set input password menjadi 'password' (tersembunyi) saat halaman pertama kali dimuat
+              const passwordField = document.getElementById('password_adminkabid');
+              const toggleButton = passwordField.nextElementSibling;
+          
+              // Set default mata tertutup
+              passwordField.setAttribute("type", "password"); // Password tersembunyi saat halaman dimuat
+              toggleButton.classList.add("fa-eye-slash");  // Ikon mata tertutup saat halaman dimuat
+            };
+          
+            function togglePassword(inputId) {
+              const passwordField = document.getElementById(inputId);
+              const toggleButton = passwordField.nextElementSibling;
+          
+              // Toggle tipe input antara 'password' (tersembunyi) dan 'text' (terlihat)
+              const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+              passwordField.setAttribute("type", type);
+          
+              // Toggle ikon mata
+              if (passwordField.getAttribute("type") === "text") {
+                toggleButton.classList.remove("fa-eye-slash");
+                toggleButton.classList.add("fa-eye");
+              } else {
+                toggleButton.classList.remove("fa-eye");
+                toggleButton.classList.add("fa-eye-slash");
+              }
+            }
 </script>
 
 <%- include('../partials/footer__') %>
