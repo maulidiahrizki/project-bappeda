@@ -160,6 +160,46 @@
     }
 }
 
+/* Styling untuk tombol Lihat Data di sebelah kanan */
+.x_title {
+    display: flex;
+    justify-content: space-between; /* Membuat ruang antara elemen kiri dan kanan */
+    align-items: center; /* Vertikal align agar elemen rata tengah */
+}
+
+.btn-wrapper {
+    margin-left: auto; /* Memastikan tombol berada di sebelah kanan */
+}
+
+.btn-wrapper-lihatdata {
+    position: absolute;
+    right: 30px; /* Tombol akan terletak di ujung kanan */
+    top: 16%; /* Menempatkan tombol di tengah vertikal */
+    transform: translateY(-50%); /* Untuk menyeimbangkan posisi tengah vertikal */
+}
+
+.btn-info {
+    background-color: #17a2b8; /* Biru muda */
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover efek untuk tombol Lihat Data */
+.btn-info:hover {
+    background-color: #138496; /* Biru lebih gelap saat hover */
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.2); /* Shadow lembut */
+}
+
+.btn-info i {
+    margin-right: 8px; /* Memberikan jarak antara ikon dan tulisan */
+}
+
 
 /* Menjaga form-group agar tetap responsif pada layar kecil */
 @media (max-width: 768px) {
@@ -178,6 +218,11 @@
     <div class="page-title">
         <div class="title_left">
             <h3>Manajemen Data Kepala Bidang</h3>
+        </div>
+        <div class="btn-wrapper-lihatdata">
+            <button class="btn-minimal btn-info" onclick="window.location.href='/adminkabid/hasilinput'">
+                <i class="fa fa-folder-open"></i> Lihat Data
+            </button>
         </div>
     </div>
 
@@ -199,7 +244,7 @@
 
                     <!-- Step 1 -->
                     <div id="step-1">
-                        <form action="/adminkabid/input" method="POST" enctype="multipart/form-data" id="form-step-1" class="form-horizontal form-label-left">
+                        <form action="/adminkabid/input" method="POST" enctype="multipart/form-data" id="form-step-1" class="form-horizontal form-label-left" onsubmit="return false;">
                             <!-- Foto Profil -->
                             <div class="form-group row" style="text-align: center; margin-top: 20px;">
                                 <div class="col-md-12">
@@ -219,44 +264,44 @@
                                 <div class="form-wrapper">
                                     <!-- Kolom 1 -->
                                     <div class="form-group">
-                                        <label class="col-form-label">Nama Lengkap</label>
-                                        <input type="text" id="nama_adminkabid" name="nama_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Nama Lengkap*</label>
+                                        <input type="text" id="nama_adminkabid" name="nama_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                             
                                     <div class="form-group">
-                                        <label class="col-form-label">Nomor NIP</label>
-                                        <input type="text" id="nip_adminkabid" name="nip_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Nomor NIP*</label>
+                                        <input type="text" id="nip_adminkabid" name="nip_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                             
                                     <div class="form-group">
-                                        <label class="col-form-label">Nama Bidang</label>
+                                        <label class="col-form-label">Nama Bidang*</label>
                                         <select name="bidang_id" class="form-control" required>
                                             <option value="">Pilih Bidang</option>
                                             <% bidang.forEach(function(bidang) { %>
-                                            <option value="<%= bidang.id_bidang %>"><%= bidang.nama_bidang %></option>
+                                                <option value="<%= bidang.id_bidang %>"><%= bidang.nama_bidang %></option>
                                             <% }); %>
                                         </select>
                                     </div>
                             
                                     <!-- Kolom 2 -->
                                     <div class="form-group">
-                                        <label class="col-form-label">Jabatan</label>
-                                        <input type="text" id="jabatan_adminkabid" name="jabatan_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Jabatan*</label>
+                                        <input type="text" id="jabatan_adminkabid" name="jabatan_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                             
                                     <div class="form-group">
-                                        <label class="col-form-label">Alamat</label>
-                                        <input type="text" id="alamat_adminkabid" name="alamat_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Alamat*</label>
+                                        <input type="text" id="alamat_adminkabid" name="alamat_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                             
                                     <div class="form-group">
-                                        <label class="col-form-label">Nomor Telepon</label>
-                                        <input type="text" id="no_telp_adminkabid" name="no_telp_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Nomor Telepon*</label>
+                                        <input type="text" id="no_telp_adminkabid" name="no_telp_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                             
                                     <div class="form-group">
-                                        <label class="col-form-label">Email</label>
-                                        <input type="email" id="email_adminkabid" name="email_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Email*</label>
+                                        <input type="email" id="email_adminkabid" name="email_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -267,8 +312,8 @@
                                 <div class="form-wrapper">
                                     <!-- Username -->
                                     <div class="form-group">
-                                        <label class="col-form-label">Username</label>
-                                        <input type="text" id="username_adminkabid" name="username_adminkabid" required class="form-control">
+                                        <label class="col-form-label">Username*</label>
+                                        <input type="text" id="username_adminkabid" name="username_adminkabid" required class="form-control" autocomplete="off">
                                     </div>
                             
                                     <!-- Password -->
@@ -285,7 +330,7 @@
                             <!-- Tombol -->
                             <div class="btn-wrapper" style="text-align: center; margin-top: 20px;">
                                 <button class="btn-minimal btn-danger" type="reset">Reset</button>
-                                <button type="submit" class="btn-minimal btn-success">Submit</button>
+                                <button type="submit" class="btn-minimal btn-success" onclick="submitForm()">Submit</button>
                             </div>
                             
 
@@ -352,6 +397,59 @@ window.onload = function() {
                 toggleButton.classList.add("fa-eye-slash");
               }
             }
+
+            function showSuccessNotification() {
+  Swal.fire({
+    icon: 'success',
+    title: 'Data Berhasil Disimpan!',
+    text: 'Data Kepala Bidang berhasil disimpan.',
+    showConfirmButton: false,
+    timer: 3000,
+    willClose: () => {
+      console.log("Redirecting to:", '/adminkabid/hasilinput'); // Log URL
+      Swal.fire({
+        icon: 'info',
+        title: 'Lihat Data',
+        text: 'Klik tombol di bawah untuk melihat data yang sudah disimpan.',
+        showCancelButton: true,
+        confirmButtonText: 'Lihat Data',
+        cancelButtonText: 'Tutup',
+      }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.assign('/adminkabid/hasilinput');
+        }
+      });
+    }
+  });
+}
+
+// Event listener untuk form submit
+document.getElementById('form-step-1').addEventListener('submit', async function (e) {
+  e.preventDefault();  // Mencegah form submit otomatis
+
+  const formData = new FormData(this);  // Ambil data dari form
+  const response = await fetch('/adminkabid/input', {
+    method: 'POST',
+    body: formData
+  });
+
+  const result = await response.json();
+
+  if (result.success) {
+    showSuccessNotification();  // Tampilkan notifikasi sukses
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal Menyimpan Data',
+      text: result.message,
+      confirmButtonText: 'Coba Lagi'
+    });
+  }
+});
+
 </script>
+
+<!-- Tambahkan SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <%- include('../partials/footer__') %>
