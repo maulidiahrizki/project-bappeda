@@ -12,6 +12,10 @@ const usersRouter = require('./routes/users');
 const superadminRouter = require('./routes/superRoutes');
 const bidangRouter = require('./routes/bidangRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const sasaranRoutes = require('./routes/sasaranRoutes');
+const programRoutes = require('./routes/programRoutes');
+const kegiatanRoutes = require('./routes/kegiatanRoutes');
+const subkegiatanRoutes = require('./routes/subkegiatanRoutes');
 
 const app = express();
 
@@ -41,6 +45,10 @@ app.use('/users', usersRouter);
 app.use('/superadmin', superadminRouter);
 app.use('/bidang', bidangRouter);
 app.use('/adminkabid', adminRoutes);
+app.use('/sasaran', sasaranRoutes);
+app.use('/program', programRoutes);
+app.use('/kegiatan', kegiatanRoutes);
+app.use('/sub_kegiatan', subkegiatanRoutes);
 
 // Middleware to make flash messages accessible in views
 app.use((req, res, next) => {
