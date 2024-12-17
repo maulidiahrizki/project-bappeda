@@ -96,44 +96,36 @@ router.post("/input", upload.single("foto_profil_adminkabid"), async (req, res) 
   }
 });
 
-// Halaman hasil input admin
-// Menampilkan hasil input admin (semua data admin)
 router.get("/hasilinput", async (req, res) => {
   try {
     // Ambil semua data admin dari database
-    const admins = await modelAdmin.getAllAdmins(); // Ambil semua data admin
+    const admins = await modelAdmin.getAllAdmins(); 
 
-    // Render halaman hasilinput dengan data admin
-    res.render("adminkabid/hasilinput", { admins: admins, message: "Daftar Semua Admin" });
+    // Ambil data bidang
+    const bidang = await modelAdmin.getAllBidang(); 
+
+    // Render halaman hasilinput dengan data admin dan bidang
+    res.render("adminkabid/hasilinput", { admins: admins, bidang: bidang, message: "Daftar Semua Admin" });
   } catch (error) {
     console.error("Error fetching admin data:", error);
     res.status(500).json({ message: "Gagal mengambil data admin", error });
   }
 });
 
-// Menampilkan halaman Edit Admin berdasarkan ID
-// Menampilkan halaman Edit Admin berdasarkan ID
-// Menampilkan data Admin yang ingin diedit (AJAX)
+// Halaman edit admin berdasarkan ID
 router.get("/edit/:id", async (req, res) => {
   const adminId = req.params.id;
   try {
-    const admins = await modelAdmin.getAllAdmins();
-    const adminToEdit = admins.find(admin => admin.id_adminkabid === parseInt(adminId));
-
-    if (!adminToEdit) {
-      return res.status(404).json({ success: false, message: "Admin tidak ditemukan" });
-    }
-
-    res.json({ success: true, admin: adminToEdit });
+    const admin = await modelAdmin.getAdminById(adminId); // Ambil data admin berdasarkan ID
+    const bidang = await modelAdmin.getAllBidang(); // Ambil data bidang
+    res.render("adminkabid/editadmin", { admin, bidang });
   } catch (error) {
-    console.error("Error fetching admin for edit:", error);
-    res.status(500).json({ success: false, message: "Terjadi kesalahan", error });
+    console.error("Error fetching admin data:", error);
+    res.status(500).json({ message: "Gagal mengambil data admin", error });
   }
 });
 
-
-// Update Admin
-// Update Admin (di backend)
+// Update admin
 router.post("/edit/:id", upload.single("foto_profil_adminkabid"), async (req, res) => {
   const adminId = req.params.id;
   const {
@@ -143,54 +135,71 @@ router.post("/edit/:id", upload.single("foto_profil_adminkabid"), async (req, re
     alamat_adminkabid,
     no_telp_adminkabid,
     email_adminkabid,
-    username_adminkabid,  // username tidak perlu diupdate
+    username_adminkabid,
     password_adminkabid,
-    bidang_id
+    bidang_id,
   } = req.body;
 
   try {
-    let updatedData = {
+    let hashedPassword = password_adminkabid;
+    if (password_adminkabid) {
+      // Jika password baru dimasukkan, hash password-nya
+      hashedPassword = await bcrypt.hash(password_adminkabid, 10);
+    }
+
+    // Siapkan data untuk diupdate
+    const data = {
       nama_adminkabid,
       nip_adminkabid,
       jabatan_adminkabid,
       alamat_adminkabid,
       no_telp_adminkabid,
       email_adminkabid,
-      username_adminkabid, // tidak perlu update username
+      username_adminkabid,
+      password_adminkabid: hashedPassword,
+      foto_profil_adminkabid: req.file ? req.file.filename : null, // Simpan nama file gambar jika ada
       bidang_id,
     };
 
-    // Cek apakah password diubah
-    if (password_adminkabid) {
-      updatedData.password_adminkabid = await bcrypt.hash(password_adminkabid, 10); 
-    }
+    // Panggil model untuk update admin
+    await modelAdmin.updateAdmin(adminId, data);
 
-    // Update foto profil jika ada
-    if (req.file) {
-      updatedData.foto_profil_adminkabid = req.file.filename; 
-    }
-
-    await modelAdmin.updateAdmin(adminId, updatedData);
-    res.json({ success: true, message: "Data berhasil diupdate" });
+    // Redirect atau respon sukses
+    res.json({
+      success: true,
+      message: 'Data admin berhasil diupdate!',
+    });
+    res.render("adminkabid/hasilinput", { admin, bidang });
 
   } catch (error) {
     console.error("Error updating admin:", error);
-    res.status(500).json({ success: false, message: "Gagal mengupdate data admin", error });
+    res.status(500).json({
+      success: false,
+      message: "Gagal mengupdate admin",
+      error: error,
+    });
   }
 });
 
 
-// Hapus Admin
-router.get("/delete/:id", async (req, res) => {
+// Hapus admin berdasarkan ID
+router.post("/delete/:id", async (req, res) => {
   const adminId = req.params.id;
-  
   try {
-    await modelAdmin.deleteAdmin(adminId);
-    res.redirect("/adminkabid/dashboard"); 
+    await modelAdmin.deleteAdmin(adminId); // Panggil model untuk menghapus admin
+    res.json({
+      success: true,
+      message: 'Admin berhasil dihapus!',
+    });
   } catch (error) {
     console.error("Error deleting admin:", error);
-    res.status(500).json({ message: "Gagal menghapus admin", error });
+    res.status(500).json({
+      success: false,
+      message: "Gagal menghapus admin",
+      error: error,
+    });
   }
 });
+
 
 module.exports = router;
