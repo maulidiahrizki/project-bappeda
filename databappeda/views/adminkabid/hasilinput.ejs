@@ -288,9 +288,10 @@
                         <!-- Tombol Edit -->
                         <div class="admin-card-footer">
                             <a href="/adminkabid/edit/<%= admin.id_adminkabid %>" class="btn-action editBtn" data-id="<%= admin.id_adminkabid %>">Edit</a>
-                            <a href="/adminkabid/delete/<%= admin.id_adminkabid %>" class="btn-delete" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
+                            <form action="/adminkabid/delete/<%= admin.id_adminkabid %>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                              <button type="submit" class="btn-delete">Delete</button>
+                            </form>                                                       
                         </div>
-  
                       </div>
                     </div>
               <% }); %>
@@ -301,6 +302,20 @@
     </div>
   </div>
 
+  <script>
+    function deleteAdmin(adminId) {
+      if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+        // Membuat form secara dinamis
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/adminkabid/delete/' + adminId;
+  
+        // Menambahkan form ke body dan submit
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+  </script>
   
   <%- include('../partials/footer__') %>
   

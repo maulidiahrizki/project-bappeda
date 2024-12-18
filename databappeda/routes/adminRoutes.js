@@ -5,6 +5,10 @@ const path = require("path");
 const multer = require("multer");
 const bcrypt = require("bcrypt");
 
+
+
+
+
 // Setup multer untuk upload gambar
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -15,6 +19,10 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+
+
+
+
 
 
 // Halaman Dashboard Admin
@@ -29,19 +37,27 @@ router.get("/dashboard", async (req, res) => {
 });
 
 
+
+
+
+
 // Halaman input admin baru
 router.get("/input", async (req, res) => {
   try {
     const bidang = await modelAdmin.getAllBidang(); // Ambil data bidang
-    res.render("adminkabid/inputadmin", { bidang });
+    res.render('adminkabid/inputadmin', { bidang }); // Kirim data bidang ke view
   } catch (error) {
     console.error("Error fetching bidang data:", error);
     res.status(500).json({ message: "Gagal mengambil data bidang", error });
   }
 });
 
+
+
+
+
+
 // Tambah admin baru
-// Halaman input admin baru
 router.post("/input", upload.single("foto_profil_adminkabid"), async (req, res) => {
   const {
     nama_adminkabid,
@@ -80,11 +96,7 @@ router.post("/input", upload.single("foto_profil_adminkabid"), async (req, res) 
     const adminId = result.insertId;  // ID yang baru dimasukkan
 
     // Kirim respons sukses ke frontend
-    res.json({
-      success: true,
-      message: 'Data berhasil disimpan!',
-      adminId: adminId
-    });
+    res.redirect('/adminkabid/hasilinput');
 
   } catch (error) {
     console.error("Error adding admin:", error);
@@ -96,34 +108,35 @@ router.post("/input", upload.single("foto_profil_adminkabid"), async (req, res) 
   }
 });
 
-router.get("/hasilinput", async (req, res) => {
-  try {
-    // Ambil semua data admin dari database
-    const admins = await modelAdmin.getAllAdmins(); 
 
-    // Ambil data bidang
-    const bidang = await modelAdmin.getAllBidang(); 
 
-    // Render halaman hasilinput dengan data admin dan bidang
-    res.render("adminkabid/hasilinput", { admins: admins, bidang: bidang, message: "Daftar Semua Admin" });
-  } catch (error) {
-    console.error("Error fetching admin data:", error);
-    res.status(500).json({ message: "Gagal mengambil data admin", error });
-  }
-});
 
-// Halaman edit admin berdasarkan ID
+
+
+
 router.get("/edit/:id", async (req, res) => {
   const adminId = req.params.id;
   try {
-    const admin = await modelAdmin.getAdminById(adminId); // Ambil data admin berdasarkan ID
-    const bidang = await modelAdmin.getAllBidang(); // Ambil data bidang
-    res.render("adminkabid/editadmin", { admin, bidang });
+    const admin = await modelAdmin.getAdminById(adminId); // Mengambil admin berdasarkan ID
+    const bidang = await modelAdmin.getAllBidang();
+    
+    if (admin) {
+      res.render('adminkabid/editadmin', { admin, bidang });
+    } else {
+      res.status(404).send("Admin tidak ditemukan");
+    }
   } catch (error) {
-    console.error("Error fetching admin data:", error);
-    res.status(500).json({ message: "Gagal mengambil data admin", error });
+    console.error("Error getting admin data:", error);
+    res.status(500).json({ message: "Terjadi kesalahan", error });
   }
 });
+
+
+
+
+
+
+
 
 // Update admin
 router.post("/edit/:id", upload.single("foto_profil_adminkabid"), async (req, res) => {
@@ -143,11 +156,9 @@ router.post("/edit/:id", upload.single("foto_profil_adminkabid"), async (req, re
   try {
     let hashedPassword = password_adminkabid;
     if (password_adminkabid) {
-      // Jika password baru dimasukkan, hash password-nya
       hashedPassword = await bcrypt.hash(password_adminkabid, 10);
     }
 
-    // Siapkan data untuk diupdate
     const data = {
       nama_adminkabid,
       nip_adminkabid,
@@ -157,40 +168,41 @@ router.post("/edit/:id", upload.single("foto_profil_adminkabid"), async (req, re
       email_adminkabid,
       username_adminkabid,
       password_adminkabid: hashedPassword,
-      foto_profil_adminkabid: req.file ? req.file.filename : null, // Simpan nama file gambar jika ada
+      foto_profil_adminkabid: req.file ? req.file.filename : null,
       bidang_id,
     };
 
-    // Panggil model untuk update admin
     await modelAdmin.updateAdmin(adminId, data);
-
-    // Redirect atau respon sukses
-    res.json({
-      success: true,
-      message: 'Data admin berhasil diupdate!',
-    });
-    res.render("adminkabid/hasilinput", { admin, bidang });
-
+    console.log("Update Admin ID:", adminId); // Debugging ID
+    res.redirect('/adminkabid/hasilinput');
   } catch (error) {
     console.error("Error updating admin:", error);
-    res.status(500).json({
-      success: false,
-      message: "Gagal mengupdate admin",
-      error: error,
-    });
+    res.status(500).json({ success: false, message: "Gagal mengupdate admin", error });
   }
 });
 
 
+
+
+
+
+
 // Hapus admin berdasarkan ID
 router.post("/delete/:id", async (req, res) => {
-  const adminId = req.params.id;
+  const adminId = req.params.id; // Mendapatkan ID dari parameter URL
   try {
-    await modelAdmin.deleteAdmin(adminId); // Panggil model untuk menghapus admin
-    res.json({
-      success: true,
-      message: 'Admin berhasil dihapus!',
-    });
+    const result = await modelAdmin.deleteAdmin(adminId); // Panggil model untuk menghapus admin
+    
+    if (result.affectedRows > 0) {
+      // Jika admin berhasil dihapus
+      res.redirect('/adminkabid/hasilinput');
+    } else {
+      // Jika admin dengan ID tersebut tidak ditemukan
+      res.status(404).json({
+        success: false,
+        message: 'Admin tidak ditemukan',
+      });
+    }
   } catch (error) {
     console.error("Error deleting admin:", error);
     res.status(500).json({
@@ -201,5 +213,21 @@ router.post("/delete/:id", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+// Halaman Dashboard Admin
+router.get("/hasilinput", async (req, res) => {
+  try {
+    const result = await modelAdmin.getAllAdmins(); // Ambil data admin
+    res.render("adminkabid/hasilinput", { admins: result }); // Kirim data admins ke view
+  } catch (error) {
+    console.error("Error getting admin data:", error);
+    res.status(500).json({ message: "Terjadi kesalahan", error });
+  }
+});
 
 module.exports = router;

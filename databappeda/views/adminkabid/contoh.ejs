@@ -1,0 +1,264 @@
+<form action="/adminkabid/input" method="POST" enctype="multipart/form-data" id="form-step-1" class="form-horizontal form-label-left">
+    <label for="nama_adminkabid">Nama Admin:</label>
+    <input type="text" name="nama_adminkabid" required><br>
+
+    <label for="nip_adminkabid">NIP Admin:</label>
+    <input type="text" name="nip_adminkabid" required><br>
+
+    <label for="jabatan_adminkabid">Jabatan Admin:</label>
+    <input type="text" name="jabatan_adminkabid" required><br>
+
+    <label for="alamat_adminkabid">Alamat Admin:</label>
+    <input type="text" name="alamat_adminkabid" required><br>
+
+    <label for="no_telp_adminkabid">No. Telp Admin:</label>
+    <input type="text" name="no_telp_adminkabid" required><br>
+
+    <label for="email_adminkabid">Email Admin:</label>
+    <input type="email" name="email_adminkabid" required><br>
+
+    <label for="username_adminkabid">Username Admin:</label>
+    <input type="text" name="username_adminkabid" required><br>
+
+    <label for="password_adminkabid">Password:</label>
+    <input type="password" name="password_adminkabid" required><br>
+
+    <label for="foto_profil_adminkabid">Foto Profil:</label>
+    <input type="file" name="foto_profil_adminkabid" accept="image/*"><br>
+
+    <label for="bidang_id">Bidang:</label>
+    <select name="bidang_id" class="form-control" required>
+        <option value="">Pilih Bidang</option>
+        <% bidang.forEach(function(bidang) { %>
+            <option value="<%= bidang.id_bidang %>"><%= bidang.nama_bidang %></option>
+        <% }); %>                                
+    </select>
+
+    <button type="submit">Tambah Admin</button>
+</form>
+
+
+<style>
+
+input[type="text"], input[type="email"], input[type="password"] {
+  width: 100%;
+  padding: 8px 10px 9px 35px;
+  height: 35px;
+  border: 1px solid var(--grey);
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.30s ease-in-out;
+}
+
+input[type="text"]:hover, input[type="email"]:hover, input[type="password"]:hover {
+  background: #fafafa;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+  box-shadow: 0 0 2px 1px rgba(255, 169, 0, 0.5);
+  border: 1px solid var(--yellow);
+  background: #fafafa;
+}
+
+input[type="submit"] {
+  background: var(--yellow);
+  height: 35px;
+  line-height: 35px;
+  width: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  transition: all 0.30s ease-in-out;
+}
+
+input[type="submit"]:hover,
+input[type="submit"]:focus {
+  background: #d79f16; /* darken by 7% */
+}
+
+input[type="checkbox"], input[type="radio"] {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.form_container .row .col_half.last {
+  border-left: 1px solid var(--grey);
+}
+
+.checkbox_option label {
+  margin-right: 1em;
+  position: relative;
+}
+
+.checkbox_option label::before {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.5em;
+  vertical-align: -2px;
+  border: 2px solid var(--grey);
+  padding: 0.12em;
+  background-color: transparent;
+  background-clip: content-box;
+  transition: all 0.2s ease;
+}
+
+.checkbox_option label::after {
+  border-right: 2px solid var(--black);
+  border-top: 2px solid var(--black);
+  content: "";
+  height: 20px;
+  left: 2px;
+  position: absolute;
+  top: 7px;
+  transform: scaleX(-1) rotate(135deg);
+  width: 7px;
+  display: none;
+}
+
+.checkbox_option input:checked + label::after {
+  animation: check 0.8s ease 0s running;
+  display: block;
+  width: 7px;
+  height: 20px;
+  border-color: var(--black);
+}
+
+.checkbox_option input:hover + label::before {
+  border-color: var(--black);
+}
+
+.radio_option label {
+  margin-right: 1em;
+}
+
+.radio_option label::before {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.5em;
+  border-radius: 100%;
+  vertical-align: -3px;
+  border: 2px solid var(--grey);
+  padding: 0.15em;
+  background-color: transparent;
+  background-clip: content-box;
+  transition: all 0.2s ease;
+}
+
+.radio_option input:hover + label::before {
+  border-color: var(--black);
+}
+
+.radio_option input:checked + label::before {
+  background-color: var(--black);
+  border-color: var(--black);
+}
+
+.select_option {
+  position: relative;
+  width: 100%;
+}
+
+.select_option select {
+  display: inline-block;
+  width: 100%;
+  height: 35px;
+  padding: 0px 15px;
+  cursor: pointer;
+  color: #7b7b7b;
+  border: 1px solid var(--grey);
+  background: #fff;
+  appearance: none;
+  transition: all 0.2s ease;
+}
+
+.select_option select:hover, .select_option select:focus {
+  color: var(--black);
+  background: #fafafa;
+  border-color: var(--black);
+}
+
+.select_arrow {
+  position: absolute;
+  top: calc(50% - 4px);
+  right: 15px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  border-width: 8px 5px 0 5px;
+  border-style: solid;
+  border-color: #7b7b7b transparent transparent transparent;
+}
+
+.select_option select:hover + .select_arrow, .select_option select:focus + .select_arrow {
+  border-top-color: var(--black);
+}
+
+.credit {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 15px;
+  color: var(--yellow);
+}
+
+.credit a {
+  color: #d79f16; /* darken yellow by 7% */
+}
+
+/* Animations */
+@keyframes check {
+  0% { height: 0; width: 0; }
+  25% { height: 0; width: 7px; }
+  50% { height: 20px; width: 7px; }
+}
+
+@keyframes expand { 
+  0% { transform: scale3d(1, 0, 1); opacity: 0; }
+  25% { transform: scale3d(1, 1.2, 1); }
+  50% { transform: scale3d(1, 0.85, 1); }
+  75% { transform: scale3d(1, 1.05, 1); }
+  100% { transform: scale3d(1, 1, 1); opacity: 1; }
+}
+
+@keyframes bounce { 
+  0% { transform: translate3d(0, -25px, 0); opacity: 0; }
+  25% { transform: translate3d(0, 10px, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+  75% { transform: translate3d(0, 2px, 0); }
+  100% { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .form_wrapper .col_half {
+    width: 100%;
+    float: none;
+  }
+
+  .bottom_row .col_half {
+    width: 50%;
+    float: left;
+  }
+
+  .form_container .row .col_half.last {
+    border-left: none;
+  }
+
+  .remember_me {
+    padding-bottom: 20px;
+  }
+}
+
+</style>
